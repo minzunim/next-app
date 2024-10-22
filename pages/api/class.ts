@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
 import { getCampusList } from "@/src/services/campus";
+import { getCurrentDate } from "@/src/utils/function";
 
 const prisma = new PrismaClient();
 
@@ -21,19 +22,24 @@ export default async function createClass(req: NextApiRequest, res: NextApiRespo
 
         const campus_no = campus_list[0].idx;
 
-        class_list.map((item: any) => ({
+        const _class_list = class_list.map((item: any) => ({
             ...item,
             campas_no: campus_no,
             color_hex: "#ffaa04",
             teacher_no: member_no,
             register: member_no,
+            register_date: getCurrentDate()
         }));
+
+        _class_list.forEach((el: any) => {
+            delete el['id'];
+        });
 
         console.log('class_list', class_list);
 
         // 클래스 생성
         const classes = await prisma.campas_class.createMany({
-            data: class_list
+            data: _class_list
         });
 
         res.json({ code: 200, msg: `클래스 생성 완료`, data: null });

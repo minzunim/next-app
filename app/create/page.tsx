@@ -1,7 +1,8 @@
 "use client";
 
 import axios from "axios";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
+import * as xlsx from "xlsx";
 
 interface CreateOrder {
     master_id: string;
@@ -30,6 +31,10 @@ export default function Campus() {
     const [studentCount, setStudentCount] = useState<number | string>('');
     const [productNo, setProductNo] = useState<number | string>('');
     const [expireDate, setExpireDate] = useState('');
+
+    const [excelFile, setExcelFile] = useState([]);
+
+    const [masterForCampusId, setMasterForCampusId] = useState('');
 
     const nextId = useRef<number>(1);
 
@@ -62,7 +67,6 @@ export default function Campus() {
     // input 삭제
     const deleteInput = (index: number) => {
         setInputItems(inputItems.filter(item => item.id !== index));
-        // console.log('inputItems', inputItems);
     };
 
 
@@ -79,7 +83,6 @@ export default function Campus() {
         }
 
         setInputItems(inputItemCopy);
-        console.log('inputItems', inputItems);
     };
 
 
@@ -115,7 +118,6 @@ export default function Campus() {
         };
 
         const orderRes = await createOrder(requestOrderData);
-        console.log("🚀 ~ orderRes:", orderRes);
 
         const requestClassData = {
             member_no: orderRes,
@@ -123,8 +125,59 @@ export default function Campus() {
         };
 
         const classRes = await createClass(requestClassData);
-        console.log("🚀 ~ classRes:", classRes);
     };
+
+
+    // 엑셀 업로드
+    const onChangeExcelUpload = async (files) => {
+        console.log('files', files);
+
+        if (files.length > 0) {
+            const file = files[0];
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const data = new Uint8Array(e.target.result);
+                const workbook = xlsx.read(data, { type: "array", bookVBA: true });
+
+                const sheetName = workbook.SheetNames[0];
+                const sheet = workbook.Sheets[sheetName];
+                const jsonData = xlsx.utils.sheet_to_json(sheet);
+
+                setExcelFile(jsonData);
+                console.log('excelFile', excelFile);
+            };
+            reader.readAsArrayBuffer(file);
+        }
+    };
+
+    // 저장 버튼 클릭 시 엑셀 API 호출
+    const onClickSubmitExcel = async () => {
+        const requestData = {
+            master_id: masterForCampusId,
+            list: excelFile
+        };
+
+        await createMembers(requestData);
+    };
+
+    const createMembers = async (data) => {
+        const response = await axios.post("/api/member", data);
+        if (response.data.code !== 200) {
+            alert(response.data.msg);
+            return;
+        } else {
+            alert(response.data.msg);
+            window.location.reload();
+        }
+    };
+
+    useEffect(() => {
+        if (excelFile.length > 0) {
+            console.log('Excel 파일 데이터:', excelFile);
+            // 여기서 excelFile을 사용하는 추가 로직 구현
+        }
+    }, [excelFile]);
 
     return (
         <div>
@@ -164,7 +217,7 @@ export default function Campus() {
                 <div>클래스 생성</div>
                 {
                     inputItems.map((item, index) => (
-                        <div>
+                        <div key={index}>
                             <input
                                 type="text"
                                 onChange={e => onChangeClassInput(e, index, "title")}
@@ -188,9 +241,25 @@ export default function Campus() {
             </div>
             <hr></hr>
             <div>
+                <h1>학생 계정 생성 & 클래스 배정</h1>
+                <span></span>
+                <div>원장님 ID&nbsp;
+                    <input
+                        type="text"
+                        onChange={(e) => setMasterForCampusId(e.target.value)}
+                    />
+                </div>
+                <div>엑셀 업로드&nbsp;
+                    <input
+                        type="file"
+                        accept=".xlsx, .xls, .csv"
+                        onChange={(e) => onChangeExcelUpload(e.target.files)}
+                    />
+                    <span>샘플 파일 다운로드</span>
+                </div>
+                <button onClick={onClickSubmitExcel}>저장</button>
             </div>
-        </div >
-
+        </div>
     );
 }
 

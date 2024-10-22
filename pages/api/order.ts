@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
 import { getCampusList } from "@/src/services/campus";
+import { getCurrentDate } from "@/src/utils/function";
 
 const prisma = new PrismaClient();
 
@@ -64,13 +65,13 @@ export default async function createOrder(req: NextApiRequest, res: NextApiRespo
                     balance: 0,
                     order: member_no,
                     status: 1,
-                    expire_date: (new Date(expire_date)).toISOString()
+                    expire_date: new Date(expire_date).toISOString(),
+                    register_date: getCurrentDate()
                 }
             });
 
             order_no = order.idx;
 
-            console.log('order_no', order_no);
             if (!order_no) res.json({ code: 500, msg: `주문 건 생성 실패`, data: order_no });
 
             // campas_subscrip 인서트
@@ -80,9 +81,11 @@ export default async function createOrder(req: NextApiRequest, res: NextApiRespo
                     order_no,
                     start_date: (new Date(yymmdd)).toISOString(),
                     expire_date: (new Date(expire_date)).toISOString(),
-                    register: member_no
+                    register: member_no,
+                    register_date: getCurrentDate()
                 }
             });
+
             if (!subscrip.idx) res.json({ code: 500, msg: `캠퍼스 구독 정보 생성 실패`, data: subscrip });
 
             const updateCampus = await tx.campas.update({
