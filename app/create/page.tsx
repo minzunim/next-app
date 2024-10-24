@@ -129,23 +129,25 @@ export default function Campus() {
 
 
     // 엑셀 업로드
-    const onChangeExcelUpload = async (files) => {
+    const onChangeExcelUpload = async (files: HTMLInputElement["files"]) => {
         console.log('files', files);
 
-        if (files.length > 0) {
-            const file = files[0];
+        if (files!.length > 0) {
+            const file = files![0];
 
-            const reader = new FileReader();
+            const reader: FileReader = new FileReader();
             reader.onload = async (e) => {
-                const data = new Uint8Array(e.target.result);
-                const workbook = xlsx.read(data, { type: "array", bookVBA: true });
+                if (e.target?.result && e.target.result instanceof ArrayBuffer) {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = xlsx.read(data, { type: "array", bookVBA: true });
 
-                const sheetName = workbook.SheetNames[0];
-                const sheet = workbook.Sheets[sheetName];
-                const jsonData = xlsx.utils.sheet_to_json(sheet);
+                    const sheetName = workbook.SheetNames[0];
+                    const sheet = workbook.Sheets[sheetName];
+                    const jsonData = xlsx.utils.sheet_to_json(sheet);
 
-                setExcelFile(jsonData);
-                console.log('excelFile', excelFile);
+                    setExcelFile(jsonData);
+                    console.log('excelFile', excelFile);
+                }
             };
             reader.readAsArrayBuffer(file);
         }
@@ -161,7 +163,7 @@ export default function Campus() {
         await createMembers(requestData);
     };
 
-    const createMembers = async (data) => {
+    const createMembers = async (data: any) => {
         const response = await axios.post("/api/member", data);
         if (response.data.code !== 200) {
             alert(response.data.msg);

@@ -1,10 +1,10 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
-}
-
-generator client {
-  provider = "prisma-client-js"
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -44,9 +44,9 @@ model alarm {
   is_hidden                     String     @default("N") @db.Char(1)
   is_deleted                    String     @default("N") @db.Char(1)
   chat_room_no                  Int?
-  member_alarm_senderTomember   member?    @relation("alarm_senderTomember", fields: [sender], references: [idx], onDelete: Restrict, onUpdate: Restrict, map: "alarm_member_FK")
-  member_alarm_receiverTomember member?    @relation("alarm_receiverTomember", fields: [receiver], references: [idx], onDelete: Restrict, onUpdate: Restrict, map: "alarm_member_FK2")
-  chat_room                     chat_room? @relation(fields: [chat_room_no], references: [idx], onDelete: Restrict, onUpdate: Restrict, map: "chat_room_FK3")
+  member_alarm_senderTomember   member?    @relation("alarm_senderTomember", fields: [sender], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "alarm_member_FK")
+  member_alarm_receiverTomember member?    @relation("alarm_receiverTomember", fields: [receiver], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "alarm_member_FK2")
+  chat_room                     chat_room? @relation(fields: [chat_room_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "chat_room_FK3")
 
   @@index([sender], map: "alarm_member_FK")
   @@index([receiver], map: "alarm_member_FK2")
@@ -125,9 +125,9 @@ model board {
   modifier                      Int?
   modify_date                   DateTime? @db.Timestamp(0)
   is_deleted                    String    @default("N") @db.Char(1)
-  file                          file?     @relation(fields: [thumbnail_no], references: [idx], onUpdate: Restrict, map: "board_file_FK")
-  member_board_registerTomember member?   @relation("board_registerTomember", fields: [register], references: [idx], onUpdate: Restrict, map: "board_member_FK1")
-  member_board_modifierTomember member?   @relation("board_modifierTomember", fields: [modifier], references: [idx], onUpdate: Restrict, map: "board_member_FK2")
+  file                          file?     @relation(fields: [thumbnail_no], references: [idx], onUpdate: NoAction, map: "board_file_FK")
+  member_board_registerTomember member?   @relation("board_registerTomember", fields: [register], references: [idx], onUpdate: NoAction, map: "board_member_FK1")
+  member_board_modifierTomember member?   @relation("board_modifierTomember", fields: [modifier], references: [idx], onUpdate: NoAction, map: "board_member_FK2")
 
   @@index([thumbnail_no], map: "board_file_FK")
   @@index([register], map: "board_member_FK1")
@@ -174,9 +174,9 @@ model campas {
   modify_date                     DateTime?            @db.Timestamp(0)
   close_date                      DateTime?            @db.Timestamp(0)
   is_deleted                      String               @default("N") @db.Char(1)
-  file_campas_mb_main_imageTofile file?                @relation("campas_mb_main_imageTofile", fields: [mb_main_image], references: [idx], onDelete: Restrict, onUpdate: Restrict, map: "campas_file_FK2")
-  member                          member               @relation(fields: [register], references: [idx], onUpdate: Restrict, map: "campas_member_FK")
-  file_campas_logo_noTofile       file?                @relation("campas_logo_noTofile", fields: [logo_no], references: [idx], onDelete: Restrict, onUpdate: Restrict, map: "campase_file_FK")
+  file_campas_mb_main_imageTofile file?                @relation("campas_mb_main_imageTofile", fields: [mb_main_image], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "campas_file_FK2")
+  member                          member               @relation(fields: [register], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "campas_member_FK")
+  file_campas_logo_noTofile       file?                @relation("campas_logo_noTofile", fields: [logo_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "campase_file_FK")
   campas_class                    campas_class[]
   campas_class_badge              campas_class_badge[] @ignore
   campas_disposition              campas_disposition[]
@@ -205,10 +205,10 @@ model campas_class {
   class_code                             String?                @db.VarChar(50)
   product_no                             Int?
   pvoca_cls_type                         Int?
-  product                                product?               @relation(fields: [product_no], references: [idx], onDelete: Restrict, onUpdate: Restrict, map: "FK_campas_class_cedu.product")
-  campas                                 campas                 @relation(fields: [campas_no], references: [idx], onUpdate: Restrict, map: "campas_class_campas_FK")
-  member_campas_class_teacher_noTomember member                 @relation("campas_class_teacher_noTomember", fields: [teacher_no], references: [idx], onUpdate: Restrict, map: "campas_class_member_FK")
-  member_campas_class_registerTomember   member                 @relation("campas_class_registerTomember", fields: [register], references: [idx], onUpdate: Restrict, map: "campas_class_member_FK2")
+  product                                product?               @relation(fields: [product_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "FK_campas_class_cedu.product")
+  campas                                 campas                 @relation(fields: [campas_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "campas_class_campas_FK")
+  member_campas_class_teacher_noTomember member                 @relation("campas_class_teacher_noTomember", fields: [teacher_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "campas_class_member_FK")
+  member_campas_class_registerTomember   member                 @relation("campas_class_registerTomember", fields: [register], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "campas_class_member_FK2")
   campas_class_badge                     campas_class_badge[]   @ignore
   campas_class_course                    campas_class_course[]
   campas_class_student                   campas_class_student[]
@@ -231,11 +231,11 @@ model campas_class_badge {
   register_date           DateTime              @default(now()) @db.Timestamp(0)
   student_no              Int
   is_deleted              String                @default("N") @db.Char(1)
-  campas                  campas                @relation(fields: [campas_no], references: [idx], onUpdate: Restrict, map: "campas_class_badge_campas_FK")
-  campas_class            campas_class          @relation(fields: [campas_class_no], references: [idx], onUpdate: Restrict, map: "campas_class_badge_campas_class_FK")
-  campas_class_content    campas_class_content? @relation(fields: [campas_class_content_no], references: [idx], onDelete: Restrict, onUpdate: Restrict, map: "campas_class_badge_content_no_FK")
-  content_test            content_test?         @relation(fields: [test_no], references: [idx], onDelete: Restrict, onUpdate: Restrict, map: "campas_class_badge_content_test_FK")
-  member                  member                @relation(fields: [student_no], references: [idx], onUpdate: Restrict, map: "campas_class_badge_member_FK")
+  campas                  campas                @relation(fields: [campas_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "campas_class_badge_campas_FK")
+  campas_class            campas_class          @relation(fields: [campas_class_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "campas_class_badge_campas_class_FK")
+  campas_class_content    campas_class_content? @relation(fields: [campas_class_content_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "campas_class_badge_content_no_FK")
+  content_test            content_test?         @relation(fields: [test_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "campas_class_badge_content_test_FK")
+  member                  member                @relation(fields: [student_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "campas_class_badge_member_FK")
 
   @@index([campas_no], map: "campas_class_badge_campas_FK")
   @@index([campas_class_no], map: "campas_class_badge_campas_class_FK")
@@ -258,8 +258,8 @@ model campas_class_content {
   modify_date            DateTime?            @db.Timestamp(0)
   is_deleted             String               @default("N") @db.VarChar(1)
   campas_class_badge     campas_class_badge[] @ignore
-  campas_class_course    campas_class_course  @relation(fields: [campas_class_course_no], references: [idx], onUpdate: Restrict, map: "campas_class_content_campas_class_course_FK")
-  content_factory        content_factory      @relation(fields: [content_factory_no], references: [idx], onUpdate: Restrict, map: "campas_class_content_content_factory_FK")
+  campas_class_course    campas_class_course  @relation(fields: [campas_class_course_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "campas_class_content_campas_class_course_FK")
+  content_factory        content_factory      @relation(fields: [content_factory_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "campas_class_content_content_factory_FK")
   content_test           content_test[]
   content_user_video     content_user_video[] @ignore
 
@@ -288,8 +288,8 @@ model campas_class_course {
   pv_timer             Int?
   pv_learning          Int?
   campas_class_content campas_class_content[]
-  campas_class         campas_class           @relation(fields: [class_no], references: [idx], onUpdate: Restrict, map: "campas_class_course_campas_class_FK")
-  content_course       content_course         @relation(fields: [course_no], references: [idx], onUpdate: Restrict, map: "campas_class_course_content_course_FK")
+  campas_class         campas_class           @relation(fields: [class_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "campas_class_course_campas_class_FK")
+  content_course       content_course         @relation(fields: [course_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "campas_class_course_content_course_FK")
   content_test         content_test[]
 
   @@index([class_no], map: "campas_class_course_campas_class_FK")
@@ -305,8 +305,8 @@ model campas_class_student {
   register_date         DateTime     @default(now()) @db.Timestamp(0)
   withdraw_date         DateTime?    @db.Timestamp(0)
   withdraw_request_date DateTime?    @db.Timestamp(0)
-  campas_class          campas_class @relation(fields: [c_class_no], references: [idx], onUpdate: Restrict, map: "campas_class_student_campas_class_FK")
-  member                member       @relation(fields: [student_no], references: [idx], onUpdate: Restrict, map: "campas_class_student_member_FK")
+  campas_class          campas_class @relation(fields: [c_class_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "campas_class_student_campas_class_FK")
+  member                member       @relation(fields: [student_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "campas_class_student_member_FK")
 
   @@index([c_class_no], map: "campas_class_student_campas_class_FK")
   @@index([student_no], map: "campas_class_student_member_FK")
@@ -325,9 +325,9 @@ model campas_disposition {
   register_date                                      DateTime  @default(now()) @db.Timestamp(0)
   disposition_date                                   DateTime? @db.Timestamp(0)
   is_deletd                                          String    @default("N") @db.Char(1)
-  campas                                             campas    @relation(fields: [campas_no], references: [idx], onUpdate: Restrict, map: "campas_disposition_campas_FK")
-  member_campas_disposition_prev_member_noTomember   member    @relation("campas_disposition_prev_member_noTomember", fields: [prev_member_no], references: [idx], onUpdate: Restrict, map: "campas_disposition_member_FK")
-  member_campas_disposition_change_member_noTomember member    @relation("campas_disposition_change_member_noTomember", fields: [change_member_no], references: [idx], onUpdate: Restrict, map: "campas_disposition_member_FK2")
+  campas                                             campas    @relation(fields: [campas_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "campas_disposition_campas_FK")
+  member_campas_disposition_prev_member_noTomember   member    @relation("campas_disposition_prev_member_noTomember", fields: [prev_member_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "campas_disposition_member_FK")
+  member_campas_disposition_change_member_noTomember member    @relation("campas_disposition_change_member_noTomember", fields: [change_member_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "campas_disposition_member_FK2")
 
   @@index([campas_no], map: "campas_disposition_campas_FK")
   @@index([prev_member_no], map: "campas_disposition_member_FK")
@@ -348,8 +348,8 @@ model campas_member {
   withdraw_date         DateTime? @db.Timestamp(0)
   withdraw_manager      Int?
   is_deleted            String    @default("N") @db.Char(1)
-  campas                campas    @relation(fields: [campas_no], references: [idx], onUpdate: Restrict, map: "campas_member_campas_FK")
-  member                member    @relation(fields: [member_no], references: [idx], onUpdate: Restrict, map: "campas_member_member_FK")
+  campas                campas    @relation(fields: [campas_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "campas_member_campas_FK")
+  member                member    @relation(fields: [member_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "campas_member_member_FK")
 
   @@index([campas_no], map: "campas_member_campas_FK")
   @@index([member_no], map: "campas_member_member_FK")
@@ -369,13 +369,67 @@ model campas_subscrip {
   cancel_date         DateTime? @db.Timestamp(0)
   is_deleted          String    @default("N") @db.Char(1)
   is_b2c              Int?
-  campas              campas    @relation(fields: [campas_no], references: [idx], onUpdate: Restrict, map: "campas_subscrip_campas_FK")
-  member              member    @relation(fields: [register], references: [idx], onUpdate: Restrict, map: "campas_subscrip_member_FK")
-  order               order     @relation(fields: [order_no], references: [idx], onUpdate: Restrict, map: "campas_subscrip_order_FK")
+  campas              campas    @relation(fields: [campas_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "campas_subscrip_campas_FK")
+  member              member    @relation(fields: [register], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "campas_subscrip_member_FK")
+  order               order     @relation(fields: [order_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "campas_subscrip_order_FK")
 
   @@index([campas_no], map: "campas_subscrip_campas_FK")
   @@index([register], map: "campas_subscrip_member_FK")
   @@index([order_no], map: "campas_subscrip_order_FK")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model campas_subscrip_0719 {
+  idx                 Int       @default(0)
+  campas_no           Int
+  order_no            Int
+  start_date          DateTime  @db.Date
+  expire_date         DateTime  @db.Date
+  register            Int
+  register_date       DateTime  @default(now()) @db.Timestamp(0)
+  status              Int       @default(1)
+  request_cancel_date DateTime? @db.Timestamp(0)
+  cancel_date         DateTime? @db.Timestamp(0)
+  is_deleted          String    @default("N") @db.Char(1)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model campas_subscrip_0802 {
+  idx                 Int       @default(0)
+  campas_no           Int
+  order_no            Int
+  start_date          DateTime  @db.Date
+  expire_date         DateTime  @db.Date
+  register            Int
+  register_date       DateTime  @default(now()) @db.Timestamp(0)
+  status              Int       @default(1)
+  request_cancel_date DateTime? @db.Timestamp(0)
+  cancel_date         DateTime? @db.Timestamp(0)
+  is_deleted          String    @default("N") @db.Char(1)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model campas_subscrip_0814 {
+  idx                 Int       @default(0)
+  campas_no           Int
+  order_no            Int
+  start_date          DateTime  @db.Date
+  expire_date         DateTime  @db.Date
+  register            Int
+  register_date       DateTime  @default(now()) @db.Timestamp(0)
+  status              Int       @default(1)
+  request_cancel_date DateTime? @db.Timestamp(0)
+  cancel_date         DateTime? @db.Timestamp(0)
+  is_deleted          String    @default("N") @db.Char(1)
+
+  @@ignore
 }
 
 model campus_class_content_comment {
@@ -400,9 +454,9 @@ model chat {
   receiver_date                DateTime? @db.Timestamp(0)
   file_list                    String?   @db.VarChar(100)
   is_deleted                   String    @default("N") @db.Char(1)
-  chat_room                    chat_room @relation(fields: [room_no], references: [idx], onUpdate: Restrict, map: "chat_chat_room_FK")
-  member_chat_senderTomember   member    @relation("chat_senderTomember", fields: [sender], references: [idx], onUpdate: Restrict, map: "chat_member_FK")
-  member_chat_receiverTomember member    @relation("chat_receiverTomember", fields: [receiver], references: [idx], onUpdate: Restrict, map: "chat_member_FK2")
+  chat_room                    chat_room @relation(fields: [room_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "chat_chat_room_FK")
+  member_chat_senderTomember   member    @relation("chat_senderTomember", fields: [sender], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "chat_member_FK")
+  member_chat_receiverTomember member    @relation("chat_receiverTomember", fields: [receiver], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "chat_member_FK2")
 
   @@index([room_no], map: "chat_chat_room_FK")
   @@index([sender], map: "chat_member_FK")
@@ -416,8 +470,8 @@ model chat_attend {
   member_no     Int
   register_date DateTime  @default(now()) @db.Timestamp(0)
   is_deleted    String    @default("N") @db.Char(1)
-  chat_room     chat_room @relation(fields: [room_no], references: [idx], onUpdate: Restrict, map: "chat_attend_chat_room_FK")
-  member        member    @relation(fields: [member_no], references: [idx], onUpdate: Restrict, map: "chat_attend_member_FK")
+  chat_room     chat_room @relation(fields: [room_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "chat_attend_chat_room_FK")
+  member        member    @relation(fields: [member_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "chat_attend_member_FK")
 
   @@index([room_no], map: "chat_attend_chat_room_FK")
   @@index([member_no], map: "chat_attend_member_FK")
@@ -435,8 +489,8 @@ model chat_room {
   alarm           alarm[]
   chat            chat[]
   chat_attend     chat_attend[] @ignore
-  campas          campas        @relation(fields: [campas_no], references: [idx], onUpdate: Restrict, map: "chat_room_campas_FK")
-  campas_class    campas_class  @relation(fields: [campas_class_no], references: [idx], onUpdate: Restrict, map: "chat_room_campas_class_FK")
+  campas          campas        @relation(fields: [campas_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "chat_room_campas_FK")
+  campas_class    campas_class  @relation(fields: [campas_class_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "chat_room_campas_class_FK")
 
   @@index([campas_no], map: "chat_room_campas_FK")
   @@index([campas_class_no], map: "chat_room_campas_class_FK")
@@ -469,14 +523,14 @@ model content_answer_sheet {
   pvoca_image_id                       Int?
   pm_word                              String?                            @db.VarChar(50)
   pvoca_example                        Int?
-  content_voca_teacher_question        content_voca_teacher_question?     @relation(fields: [content_voca_teacher_question_no], references: [idx], onDelete: Restrict, onUpdate: Restrict, map: "content_answer_sheet_conent_voca_teacher_question_FK")
-  content_factory                      content_factory                    @relation(fields: [content_factory_no], references: [idx], onUpdate: Restrict, map: "content_answer_sheet_content_factory_FK")
-  content_factory_question             content_factory_question?          @relation(fields: [content_factory_question_no], references: [idx], onDelete: Restrict, onUpdate: Restrict, map: "content_answer_sheet_content_factory_question_FK")
-  content_special_training_question    content_special_training_question? @relation(fields: [content_special_training_question_no], references: [idx], onDelete: Restrict, onUpdate: Restrict, map: "content_answer_sheet_content_special_training_question_no")
-  content_test                         content_test                       @relation(fields: [test_no], references: [idx], onDelete: Cascade, onUpdate: Restrict, map: "content_answer_sheet_content_test_FK")
-  content_test_teacher_question        content_test_teacher_question?     @relation(fields: [content_test_teacher_question_no], references: [idx], onDelete: Restrict, onUpdate: Restrict, map: "content_answer_sheet_content_test_teacher_question_FK")
-  content_voca_question                content_voca_question?             @relation(fields: [content_voca_question_no], references: [idx], onDelete: Restrict, onUpdate: Restrict, map: "content_answer_sheet_content_voca_question_FK")
-  member                               member                             @relation(fields: [student_no], references: [idx], onUpdate: Restrict, map: "content_answer_sheet_member_FK")
+  content_voca_teacher_question        content_voca_teacher_question?     @relation(fields: [content_voca_teacher_question_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_answer_sheet_conent_voca_teacher_question_FK")
+  content_factory                      content_factory                    @relation(fields: [content_factory_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_answer_sheet_content_factory_FK")
+  content_factory_question             content_factory_question?          @relation(fields: [content_factory_question_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_answer_sheet_content_factory_question_FK")
+  content_special_training_question    content_special_training_question? @relation(fields: [content_special_training_question_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_answer_sheet_content_special_training_question_no")
+  content_test                         content_test                       @relation(fields: [test_no], references: [idx], onDelete: Cascade, onUpdate: NoAction, map: "content_answer_sheet_content_test_FK")
+  content_test_teacher_question        content_test_teacher_question?     @relation(fields: [content_test_teacher_question_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_answer_sheet_content_test_teacher_question_FK")
+  content_voca_question                content_voca_question?             @relation(fields: [content_voca_question_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_answer_sheet_content_voca_question_FK")
+  member                               member                             @relation(fields: [student_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_answer_sheet_member_FK")
 
   @@index([content_voca_teacher_question_no], map: "content_answer_sheet_conent_voca_teacher_question_FK")
   @@index([content_factory_no], map: "content_answer_sheet_content_factory_FK")
@@ -490,13 +544,45 @@ model content_answer_sheet {
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model content_answer_sheet_0510 {
+  idx                                  Int      @default(0)
+  test_no                              Int
+  student_no                           Int
+  content_factory_no                   Int
+  content_factory_question_no          Int?
+  content_voca_question_no             Int?
+  content_voca_question_type           Int?
+  content_test_teacher_question_no     Int?
+  content_voca_teacher_question_no     Int?
+  content_voca_teacher_question_type   Int?
+  cedu_api_qcode                       String?  @db.VarChar(45)
+  cedu_id                              Int?
+  content_special_training_question_no Int?
+  phrase_type                          Int?
+  question_index                       String?  @db.VarChar(10)
+  write_answer                         String?  @db.Text
+  correct_answer                       String?  @db.Text
+  is_answer                            Int
+  exam_time                            String?  @db.VarChar(7)
+  passages                             String?  @db.Text
+  register_date                        DateTime @default(now()) @db.Timestamp(0)
+  is_deleted                           String   @default("N") @db.Char(1)
+  pvoca_image_id                       Int?
+  pm_word                              String?  @db.VarChar(50)
+  pvoca_example                        Int?
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model content_bookmark {
   content_factory_no Int
   type               Int             @default(0)
   register           Int
   register_date      DateTime        @default(now()) @db.Timestamp(0)
-  content_factory    content_factory @relation(fields: [content_factory_no], references: [idx], onUpdate: Restrict, map: "content_bookmark_content_factory_FK")
-  member             member          @relation(fields: [register], references: [idx], onUpdate: Restrict, map: "content_bookmark_member_FK")
+  content_factory    content_factory @relation(fields: [content_factory_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_bookmark_content_factory_FK")
+  member             member          @relation(fields: [register], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_bookmark_member_FK")
 
   @@index([content_factory_no], map: "content_bookmark_content_factory_FK")
   @@index([register], map: "content_bookmark_member_FK")
@@ -524,8 +610,8 @@ model content_course {
   best                                   Int?
   best_order                             Int?
   campas_class_course                    campas_class_course[]
-  member_content_course_registerTomember member                    @relation("content_course_registerTomember", fields: [register], references: [idx], onUpdate: Restrict, map: "content_course_member_FK")
-  member_content_course_modifierTomember member?                   @relation("content_course_modifierTomember", fields: [modifier], references: [idx], onDelete: Restrict, onUpdate: Restrict, map: "content_course_member_FK2")
+  member_content_course_registerTomember member                    @relation("content_course_registerTomember", fields: [register], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_course_member_FK")
+  member_content_course_modifierTomember member?                   @relation("content_course_modifierTomember", fields: [modifier], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_course_member_FK2")
   content_course_bookmark                content_course_bookmark[] @ignore
   content_course_data                    content_course_data[]     @ignore
   content_test                           content_test[]
@@ -561,9 +647,9 @@ model content_course_data {
   register_date      DateTime        @default(now()) @db.Timestamp(0)
   modify_date        DateTime?       @db.Timestamp(0)
   is_deleted         String          @default("N") @db.Char(1)
-  content_course     content_course  @relation(fields: [course_no], references: [idx], onUpdate: Restrict, map: "content_course_data_content_course_FK")
-  content_factory    content_factory @relation(fields: [content_factory_no], references: [idx], onUpdate: Restrict, map: "content_course_data_content_factory_FK")
-  member             member          @relation(fields: [register], references: [idx], onUpdate: Restrict, map: "content_course_data_member_FK")
+  content_course     content_course  @relation(fields: [course_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_course_data_content_course_FK")
+  content_factory    content_factory @relation(fields: [content_factory_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_course_data_content_factory_FK")
+  member             member          @relation(fields: [register], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_course_data_member_FK")
 
   @@index([course_no], map: "content_course_data_content_course_FK")
   @@index([content_factory_no], map: "content_course_data_content_factory_FK")
@@ -657,11 +743,11 @@ model content_factory {
   content_answer_sheet                    content_answer_sheet[]
   content_bookmark                        content_bookmark[]                 @ignore
   content_course_data                     content_course_data[]              @ignore
-  content_special_training                content_special_training?          @relation(fields: [special_training_no], references: [idx], onDelete: Restrict, onUpdate: Restrict, map: "content_factory_content_special_training_FK")
-  content_special_training_category       content_special_training_category? @relation(fields: [special_training_category], references: [idx], onDelete: Restrict, onUpdate: Restrict, map: "content_factory_content_special_training_category_FK")
-  member_content_factory_registerTomember member                             @relation("content_factory_registerTomember", fields: [register], references: [idx], onUpdate: Restrict, map: "content_factory_member_FK")
-  member_content_factory_modifierTomember member?                            @relation("content_factory_modifierTomember", fields: [modifier], references: [idx], onDelete: Restrict, onUpdate: Restrict, map: "content_factory_member_FK2")
-  content_factory                         content_factory?                   @relation("content_factoryTocontent_factory", fields: [copy_factory_no], references: [idx], onDelete: Restrict, onUpdate: Restrict, map: "content_factory_self_FK")
+  content_special_training                content_special_training?          @relation(fields: [special_training_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_factory_content_special_training_FK")
+  content_special_training_category       content_special_training_category? @relation(fields: [special_training_category], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_factory_content_special_training_category_FK")
+  member_content_factory_registerTomember member                             @relation("content_factory_registerTomember", fields: [register], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_factory_member_FK")
+  member_content_factory_modifierTomember member?                            @relation("content_factory_modifierTomember", fields: [modifier], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_factory_member_FK2")
+  content_factory                         content_factory?                   @relation("content_factoryTocontent_factory", fields: [copy_factory_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_factory_self_FK")
   other_content_factory                   content_factory[]                  @relation("content_factoryTocontent_factory")
   content_factory_question                content_factory_question[]
   content_test_print_history              content_test_print_history[]       @ignore
@@ -672,9 +758,271 @@ model content_factory {
 
   @@index([special_training_no], map: "content_factory_content_special_training_FK")
   @@index([special_training_category], map: "content_factory_content_special_training_category_FK")
+  @@index([copy_master_factory_no], map: "content_factory_copy_master_factory_no_IDX")
   @@index([register], map: "content_factory_member_FK")
   @@index([modifier], map: "content_factory_member_FK2")
   @@index([copy_factory_no], map: "content_factory_self_FK")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model content_factory_0321 {
+  idx                         Int       @default(0)
+  copy_type                   Int?
+  copy_factory_no             Int?
+  copy_master_factory_no      Int?
+  type                        Int?
+  special_training_category   Int?
+  special_training_no         Int?
+  min_level                   Int?
+  max_level                   Int?
+  title                       String?   @db.VarChar(200)
+  video_url                   String?   @db.VarChar(250)
+  api_book_id                 String?   @db.VarChar(200)
+  api_meta_id                 String?   @db.VarChar(200)
+  question_count              Int       @default(0)
+  tr_is_comment               Int?
+  tr_is_public                Int?
+  tr_is_direct                Int?
+  tr_is_direct_analysis       Int?
+  tr_is_scrap                 Int?
+  tr_is_composition           Int?
+  ex_time                     Int?
+  ex_case                     Int?
+  ex_default_option           Int?
+  ex_select_count             Int?
+  ex_re_test                  Int?
+  ex_voice_url                String?   @db.VarChar(250)
+  ex_voice_starttime          Int?
+  ex_is_public                Int?
+  ex_start_text               String?   @db.VarChar(110)
+  ex_finish_text              String?   @db.VarChar(110)
+  ex_temp_save                Int?
+  vc_is_example               Int?
+  vc_order                    Int?
+  vc_templete                 String?   @db.LongText
+  vc_templete_print           String?   @db.LongText
+  vr_is_word_card             Int?
+  vr_is_word_meaning          Int?
+  vr_is_ans_meaning           Int?
+  vr_is_select_blank          Int?
+  vr_is_write_blank           Int?
+  vr_is_write_word            Int?
+  vr_is_matching_word         Int?
+  vr_is_word_hint             Int?
+  vr_is_blank_hint            Int?
+  vr_is_couple_match          Int?
+  vt_meaning_count            Int?
+  vt_word_meaning_count       Int?
+  vt_write_word_count         Int?
+  vt_select_blank_count       Int?
+  vt_write_blank_count        Int?
+  vt_is_word_hint             Int?
+  vt_is_blank_hint            Int?
+  is_cedu                     Int       @default(0)
+  register                    Int
+  register_date               DateTime  @default(now()) @db.Timestamp(0)
+  modifier                    Int?
+  modify_date                 DateTime? @db.Timestamp(0)
+  create_id                   String?   @db.VarChar(30)
+  is_deleted                  String    @default("N") @db.Char(1)
+  pvc_order                   Int?
+  pvc_level                   Int?
+  pvc_memo                    String?   @db.VarChar(200)
+  pvr_mem_way                 Int?
+  pvt_exam_timemin            Int?
+  pvc_pick_meaning            Int?
+  pvc_pick_meanexample        Int?
+  pvc_pick_enword             Int?
+  pvc_pick_spell              Int?
+  pvc_write_spell             Int?
+  pvc_write_spell_hint        Int?
+  pvc_write_spellexample      Int?
+  pvc_write_spellexample_hint Int?
+  pvc_pick_synano             Int?
+  pvc_pick_ox                 Int?
+  pvc_order_option            Int?
+  pvc_img_url                 String?   @db.VarChar(500)
+  memo                        String?   @db.VarChar(50)
+  pvc_unit_list               String?   @db.VarChar(500)
+  ex_voice_file_no            Int?
+  folder_no                   Int?
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model content_factory_0328_kj {
+  idx                         Int       @default(0)
+  copy_type                   Int?
+  copy_factory_no             Int?
+  copy_master_factory_no      Int?
+  type                        Int?
+  special_training_category   Int?
+  special_training_no         Int?
+  min_level                   Int?
+  max_level                   Int?
+  title                       String?   @db.VarChar(200)
+  video_url                   String?   @db.VarChar(250)
+  api_book_id                 String?   @db.VarChar(200)
+  api_meta_id                 String?   @db.VarChar(200)
+  question_count              Int       @default(0)
+  tr_is_comment               Int?
+  tr_is_public                Int?
+  tr_is_direct                Int?
+  tr_is_direct_analysis       Int?
+  tr_is_scrap                 Int?
+  tr_is_composition           Int?
+  ex_time                     Int?
+  ex_case                     Int?
+  ex_default_option           Int?
+  ex_select_count             Int?
+  ex_re_test                  Int?
+  ex_voice_url                String?   @db.VarChar(250)
+  ex_voice_starttime          Int?
+  ex_is_public                Int?
+  ex_start_text               String?   @db.VarChar(110)
+  ex_finish_text              String?   @db.VarChar(110)
+  ex_temp_save                Int?
+  vc_is_example               Int?
+  vc_order                    Int?
+  vc_templete                 String?   @db.LongText
+  vc_templete_print           String?   @db.LongText
+  vr_is_word_card             Int?
+  vr_is_word_meaning          Int?
+  vr_is_ans_meaning           Int?
+  vr_is_select_blank          Int?
+  vr_is_write_blank           Int?
+  vr_is_write_word            Int?
+  vr_is_matching_word         Int?
+  vr_is_word_hint             Int?
+  vr_is_blank_hint            Int?
+  vr_is_couple_match          Int?
+  vt_meaning_count            Int?
+  vt_word_meaning_count       Int?
+  vt_write_word_count         Int?
+  vt_select_blank_count       Int?
+  vt_write_blank_count        Int?
+  vt_is_word_hint             Int?
+  vt_is_blank_hint            Int?
+  is_cedu                     Int       @default(0)
+  register                    Int
+  register_date               DateTime  @default(now()) @db.Timestamp(0)
+  modifier                    Int?
+  modify_date                 DateTime? @db.Timestamp(0)
+  create_id                   String?   @db.VarChar(30)
+  is_deleted                  String    @default("N") @db.Char(1)
+  pvc_order                   Int?
+  pvc_level                   Int?
+  pvc_memo                    String?   @db.VarChar(200)
+  pvr_mem_way                 Int?
+  pvt_exam_timemin            Int?
+  pvc_pick_meaning            Int?
+  pvc_pick_meanexample        Int?
+  pvc_pick_enword             Int?
+  pvc_pick_spell              Int?
+  pvc_write_spell             Int?
+  pvc_write_spell_hint        Int?
+  pvc_write_spellexample      Int?
+  pvc_write_spellexample_hint Int?
+  pvc_pick_synano             Int?
+  pvc_pick_ox                 Int?
+  pvc_order_option            Int?
+  pvc_img_url                 String?   @db.VarChar(500)
+  memo                        String?   @db.VarChar(50)
+  pvc_unit_list               String?   @db.VarChar(500)
+  ex_voice_file_no            Int?
+  folder_no                   Int?
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model content_factory_0402_kj {
+  idx                         Int       @default(0)
+  copy_type                   Int?
+  copy_factory_no             Int?
+  copy_master_factory_no      Int?
+  type                        Int?
+  special_training_category   Int?
+  special_training_no         Int?
+  min_level                   Int?
+  max_level                   Int?
+  title                       String?   @db.VarChar(200)
+  video_url                   String?   @db.VarChar(250)
+  api_book_id                 String?   @db.VarChar(200)
+  api_meta_id                 String?   @db.VarChar(200)
+  question_count              Int       @default(0)
+  tr_is_comment               Int?
+  tr_is_public                Int?
+  tr_is_direct                Int?
+  tr_is_direct_analysis       Int?
+  tr_is_scrap                 Int?
+  tr_is_composition           Int?
+  ex_time                     Int?
+  ex_case                     Int?
+  ex_default_option           Int?
+  ex_select_count             Int?
+  ex_re_test                  Int?
+  ex_voice_url                String?   @db.VarChar(250)
+  ex_voice_starttime          Int?
+  ex_is_public                Int?
+  ex_start_text               String?   @db.VarChar(110)
+  ex_finish_text              String?   @db.VarChar(110)
+  ex_temp_save                Int?
+  vc_is_example               Int?
+  vc_order                    Int?
+  vc_templete                 String?   @db.LongText
+  vc_templete_print           String?   @db.LongText
+  vr_is_word_card             Int?
+  vr_is_word_meaning          Int?
+  vr_is_ans_meaning           Int?
+  vr_is_select_blank          Int?
+  vr_is_write_blank           Int?
+  vr_is_write_word            Int?
+  vr_is_matching_word         Int?
+  vr_is_word_hint             Int?
+  vr_is_blank_hint            Int?
+  vr_is_couple_match          Int?
+  vt_meaning_count            Int?
+  vt_word_meaning_count       Int?
+  vt_write_word_count         Int?
+  vt_select_blank_count       Int?
+  vt_write_blank_count        Int?
+  vt_is_word_hint             Int?
+  vt_is_blank_hint            Int?
+  is_cedu                     Int       @default(0)
+  register                    Int
+  register_date               DateTime  @default(now()) @db.Timestamp(0)
+  modifier                    Int?
+  modify_date                 DateTime? @db.Timestamp(0)
+  create_id                   String?   @db.VarChar(30)
+  is_deleted                  String    @default("N") @db.Char(1)
+  pvc_order                   Int?
+  pvc_level                   Int?
+  pvc_memo                    String?   @db.VarChar(200)
+  pvr_mem_way                 Int?
+  pvt_exam_timemin            Int?
+  pvc_pick_meaning            Int?
+  pvc_pick_meanexample        Int?
+  pvc_pick_enword             Int?
+  pvc_pick_spell              Int?
+  pvc_write_spell             Int?
+  pvc_write_spell_hint        Int?
+  pvc_write_spellexample      Int?
+  pvc_write_spellexample_hint Int?
+  pvc_pick_synano             Int?
+  pvc_pick_ox                 Int?
+  pvc_order_option            Int?
+  pvc_img_url                 String?   @db.VarChar(500)
+  memo                        String?   @db.VarChar(50)
+  pvc_unit_list               String?   @db.VarChar(500)
+  ex_voice_file_no            Int?
+  folder_no                   Int?
+
+  @@ignore
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -703,8 +1051,8 @@ model content_factory_question {
   register_date        DateTime               @default(now()) @db.Timestamp(0)
   is_deleted           String?                @default("N") @db.Char(1)
   content_answer_sheet content_answer_sheet[]
-  content_factory      content_factory        @relation(fields: [content_factory_no], references: [idx], onUpdate: Restrict, map: "content_factory_question_content_factory_FK")
-  member               member                 @relation(fields: [register], references: [idx], onUpdate: Restrict, map: "content_factory_question_member_FK")
+  content_factory      content_factory        @relation(fields: [content_factory_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_factory_question_content_factory_FK")
+  member               member                 @relation(fields: [register], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_factory_question_member_FK")
 
   @@index([content_factory_no], map: "content_factory_question_content_factory_FK")
   @@index([register], map: "content_factory_question_member_FK")
@@ -718,7 +1066,7 @@ model content_folder {
   register      Int
   register_date DateTime            @default(now()) @db.Timestamp(0)
   modify_date   DateTime?           @db.Timestamp(0)
-  member        member              @relation(fields: [register], references: [idx], onDelete: Cascade, onUpdate: Restrict, map: "content_folder_TO_member_FK")
+  member        member              @relation(fields: [register], references: [idx], onDelete: Cascade, onUpdate: NoAction, map: "content_folder_TO_member_FK")
 
   @@index([register], map: "content_folder_TO_member_FK")
 }
@@ -746,6 +1094,8 @@ model content_pvoca_my_question {
   modifier           Int?
   modify_date        DateTime? @db.Timestamp(0)
   is_deleted         String    @default("N") @db.Char(1)
+
+  @@index([content_factory_no], map: "content_pvoca_my_question_content_factory_no_IDX")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -764,13 +1114,14 @@ model content_pvoca_my_question_sub {
   campas_class_content_no Int
   pvoca_type              String  @db.VarChar(50)
 
-  @@index([campas_class_content_no, pm_id], map: "idx_content_pvoca_my_question_sub_content_no_pm_id")
-  @@index([myquestion_id], map: "myquestion_id")
+  @@index([campas_class_content_no, pm_id], map: "content_pvoca_my_question_sub_campas_class_content_no_IDX")
+  @@index([myquestion_id], map: "content_pvoca_my_question_sub_myquestion_id_IDX")
 }
 
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model content_pvoca_my_question_sub_new {
-  idx                     Int     @id @default(autoincrement())
+model content_pvoca_my_question_sub_0523 {
+  idx                     Int     @default(0)
   myquestion_id           Int
   pm_id                   Int
   bogi1                   String? @db.VarChar(200)
@@ -784,8 +1135,7 @@ model content_pvoca_my_question_sub_new {
   campas_class_content_no Int
   pvoca_type              String  @db.VarChar(50)
 
-  @@index([campas_class_content_no, pm_id], map: "idx_content_pvoca_my_question_sub_content_no_pm_id")
-  @@index([myquestion_id], map: "myquestion_id")
+  @@ignore
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -803,6 +1153,8 @@ model content_pvoca_question {
   pos                Int?
   unit_pos           Int?
   book_id            Int?
+
+  @@index([content_factory_no], map: "content_pvoca_question_content_factory_no_IDX")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -834,7 +1186,7 @@ model content_special_training {
   is_active                         String                              @default("Y") @db.Char(1)
   ord                               Int?                                @default(0)
   content_factory                   content_factory[]
-  content_special_training_category content_special_training_category   @relation(fields: [category_no], references: [idx], onUpdate: Restrict, map: "content_special_training_content_special_training_category_FK")
+  content_special_training_category content_special_training_category   @relation(fields: [category_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_special_training_content_special_training_category_FK")
   content_special_training_question content_special_training_question[]
 
   @@index([category_no], map: "content_special_training_content_special_training_category_FK")
@@ -878,7 +1230,7 @@ model content_special_training_question {
   register_date            DateTime                 @default(now()) @db.Timestamp(0)
   is_deleted               String                   @default("N") @db.Char(1)
   content_answer_sheet     content_answer_sheet[]
-  content_special_training content_special_training @relation(fields: [special_training_no], references: [idx], onUpdate: Restrict, map: "content_special_training_question_content_special_training_FK")
+  content_special_training content_special_training @relation(fields: [special_training_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_special_training_question_content_special_training_FK")
 
   @@index([special_training_no], map: "content_special_training_question_content_special_training_FK")
 }
@@ -916,15 +1268,123 @@ model content_test {
   pvoca_q_list            String?                @db.LongText
   campas_class_badge      campas_class_badge[]   @ignore
   content_answer_sheet    content_answer_sheet[]
-  campas_class_content    campas_class_content?  @relation(fields: [campas_class_content_no], references: [idx], onDelete: Restrict, onUpdate: Restrict, map: "content_test_campas_class_content_FK")
-  campas_class_course     campas_class_course?   @relation(fields: [campas_class_course_no], references: [idx], onDelete: Restrict, onUpdate: Restrict, map: "content_test_campas_class_course_FK")
-  content_course          content_course         @relation(fields: [course_no], references: [idx], onUpdate: Restrict, map: "content_test_content_course_FK")
-  member                  member                 @relation(fields: [register], references: [idx], onUpdate: Restrict, map: "content_test_member_FK")
+  campas_class_content    campas_class_content?  @relation(fields: [campas_class_content_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_test_campas_class_content_FK")
+  campas_class_course     campas_class_course?   @relation(fields: [campas_class_course_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_test_campas_class_course_FK")
+  content_course          content_course         @relation(fields: [course_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_test_content_course_FK")
+  member                  member                 @relation(fields: [register], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_test_member_FK")
 
   @@index([campas_class_content_no], map: "content_test_campas_class_content_FK")
   @@index([campas_class_course_no], map: "content_test_campas_class_course_FK")
   @@index([course_no], map: "content_test_content_course_FK")
   @@index([register], map: "content_test_member_FK")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model content_test_0306_2 {
+  idx                     Int       @default(0)
+  type                    Int
+  course_no               Int
+  campas_class_course_no  Int?
+  campas_class_content_no Int?
+  video_play_time         String?   @db.VarChar(10)
+  video_total_play_time   String?   @db.VarChar(10)
+  done_time               String    @default("00:00") @db.VarChar(10)
+  tr_type                 Int?
+  total_count             Int       @default(0)
+  total_question_count    Int       @default(0)
+  current_count           Int       @default(0)
+  phrase_question_index   Int       @default(0)
+  phrase_direct_count     Int       @default(0)
+  phrase_sub_page         Int       @default(0)
+  composition_title       String?   @db.Text
+  is_ai_clinic            Int       @default(0)
+  is_ai_clinic_retry      Int?
+  ai_clinic_list          String?   @db.Text
+  total_correct_count     Int       @default(0)
+  status                  Int
+  is_over_time            Int?
+  score                   Float?    @db.Float
+  register                Int
+  register_date           DateTime  @default(now()) @db.Timestamp(0)
+  finish_date             DateTime? @db.Timestamp(0)
+  is_deleted              String    @default("N") @db.Char(1)
+  pvoca_mem_type          String?   @db.VarChar(100)
+  pvoca_q_list            String?   @db.Text
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model content_test_0326 {
+  idx                     Int       @default(0)
+  type                    Int
+  course_no               Int
+  campas_class_course_no  Int?
+  campas_class_content_no Int?
+  video_play_time         String?   @db.VarChar(10)
+  video_total_play_time   String?   @db.VarChar(10)
+  done_time               String    @default("00:00") @db.VarChar(10)
+  tr_type                 Int?
+  total_count             Int       @default(0)
+  total_question_count    Int       @default(0)
+  current_count           Int       @default(0)
+  phrase_question_index   Int       @default(0)
+  phrase_direct_count     Int       @default(0)
+  phrase_sub_page         Int       @default(0)
+  composition_title       String?   @db.Text
+  is_ai_clinic            Int       @default(0)
+  is_ai_clinic_retry      Int?
+  ai_clinic_list          String?   @db.Text
+  total_correct_count     Int       @default(0)
+  status                  Int
+  is_over_time            Int?
+  score                   Float?    @db.Float
+  register                Int
+  register_date           DateTime  @default(now()) @db.Timestamp(0)
+  finish_date             DateTime? @db.Timestamp(0)
+  is_deleted              String    @default("N") @db.Char(1)
+  pvoca_mem_type          String?   @db.VarChar(100)
+  pvoca_q_list            String?   @db.Text
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model content_test_0510 {
+  idx                     Int       @default(0)
+  type                    Int
+  course_no               Int
+  campas_class_course_no  Int?
+  campas_class_content_no Int?
+  video_play_time         String?   @db.VarChar(10)
+  video_total_play_time   String?   @db.VarChar(10)
+  done_time               String    @default("00:00") @db.VarChar(10)
+  tr_type                 Int?
+  total_count             Int       @default(0)
+  total_question_count    Int       @default(0)
+  current_count           Int       @default(0)
+  phrase_question_index   Int       @default(0)
+  phrase_direct_count     Int       @default(0)
+  phrase_sub_page         Int       @default(0)
+  composition_title       String?   @db.Text
+  is_ai_clinic            Int       @default(0)
+  is_ai_clinic_retry      Int?
+  ai_clinic_list          String?   @db.Text
+  total_correct_count     Int       @default(0)
+  status                  Int
+  is_over_time            Int?
+  score                   Float?    @db.Float
+  register                Int
+  register_date           DateTime  @default(now()) @db.Timestamp(0)
+  finish_date             DateTime? @db.Timestamp(0)
+  is_deleted              String    @default("N") @db.Char(1)
+  pvoca_mem_type          String?   @db.VarChar(100)
+  pvoca_q_list            String?   @db.LongText
+
+  @@ignore
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -938,8 +1398,8 @@ model content_test_print_history {
   paper_size         Int             @default(1)
   register           Int
   register_date      DateTime        @default(now()) @db.Timestamp(0)
-  content_factory    content_factory @relation(fields: [content_factory_no], references: [idx], onUpdate: Restrict, map: "content_test_print_history_content_factory_FK")
-  member             member          @relation(fields: [register], references: [idx], onUpdate: Restrict, map: "content_test_print_history_member_FK")
+  content_factory    content_factory @relation(fields: [content_factory_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_test_print_history_content_factory_FK")
+  member             member          @relation(fields: [register], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_test_print_history_member_FK")
 
   @@index([content_factory_no], map: "content_test_print_history_content_factory_FK")
   @@index([register], map: "content_test_print_history_member_FK")
@@ -980,9 +1440,9 @@ model content_test_teacher_question {
   is_deleted                          String                          @default("N") @db.Char(1)
   title                               String?                         @db.VarChar(50)
   content_answer_sheet                content_answer_sheet[]
-  content_factory                     content_factory                 @relation(fields: [content_factory_no], references: [idx], onUpdate: Restrict, map: "content_test_teacher_content_factory_FK")
-  member                              member                          @relation(fields: [register], references: [idx], onUpdate: Restrict, map: "content_test_teacher_member_FK")
-  content_test_teacher_question       content_test_teacher_question?  @relation("content_test_teacher_questionTocontent_test_teacher_question", fields: [parent_no], references: [idx], onDelete: Restrict, onUpdate: Restrict, map: "content_test_teacher_question_self_FK")
+  content_factory                     content_factory                 @relation(fields: [content_factory_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_test_teacher_content_factory_FK")
+  member                              member                          @relation(fields: [register], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_test_teacher_member_FK")
+  content_test_teacher_question       content_test_teacher_question?  @relation("content_test_teacher_questionTocontent_test_teacher_question", fields: [parent_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_test_teacher_question_self_FK")
   other_content_test_teacher_question content_test_teacher_question[] @relation("content_test_teacher_questionTocontent_test_teacher_question")
 
   @@index([content_factory_no], map: "content_test_teacher_content_factory_FK")
@@ -1000,7 +1460,7 @@ model content_user_video {
   register                Int
   register_date           DateTime             @default(now()) @db.Timestamp(0)
   modify_date             DateTime?            @db.Timestamp(0)
-  campas_class_content    campas_class_content @relation(fields: [campas_class_content_no], references: [idx], onUpdate: Restrict, map: "content_user_video_campas_class_content_FK")
+  campas_class_content    campas_class_content @relation(fields: [campas_class_content_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_user_video_campas_class_content_FK")
 
   @@index([campas_class_content_no], map: "content_user_video_campas_class_content_FK")
   @@ignore
@@ -1017,10 +1477,10 @@ model content_voca_my_question {
   modifier                                         Int?
   modify_date                                      DateTime?         @db.Timestamp(0)
   is_deleted                                       String            @default("N") @db.Char(1)
-  content_factory                                  content_factory   @relation(fields: [content_factory_no], references: [idx], onUpdate: Restrict, map: "content_voca_my_question_content_factory_FK")
-  content_voca_unit                                content_voca_unit @relation(fields: [unit_no], references: [idx], onUpdate: Restrict, map: "content_voca_my_question_content_voca_unit_FK")
-  member_content_voca_my_question_registerTomember member            @relation("content_voca_my_question_registerTomember", fields: [register], references: [idx], onUpdate: Restrict, map: "content_voca_my_question_member_FK")
-  member_content_voca_my_question_modifierTomember member?           @relation("content_voca_my_question_modifierTomember", fields: [modifier], references: [idx], onDelete: Restrict, onUpdate: Restrict, map: "content_voca_my_question_member_FK2")
+  content_factory                                  content_factory   @relation(fields: [content_factory_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_voca_my_question_content_factory_FK")
+  content_voca_unit                                content_voca_unit @relation(fields: [unit_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_voca_my_question_content_voca_unit_FK")
+  member_content_voca_my_question_registerTomember member            @relation("content_voca_my_question_registerTomember", fields: [register], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_voca_my_question_member_FK")
+  member_content_voca_my_question_modifierTomember member?           @relation("content_voca_my_question_modifierTomember", fields: [modifier], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_voca_my_question_member_FK2")
 
   @@index([content_factory_no], map: "content_voca_my_question_content_factory_FK")
   @@index([unit_no], map: "content_voca_my_question_content_voca_unit_FK")
@@ -1048,7 +1508,7 @@ model content_voca_question {
   modify_date          DateTime?              @db.Timestamp(0)
   is_deleted           String                 @default("N") @db.Char(1)
   content_answer_sheet content_answer_sheet[]
-  content_voca_unit    content_voca_unit      @relation(fields: [unit_no], references: [idx], onUpdate: Restrict, map: "content_voca_question_content_voca_unit_FK")
+  content_voca_unit    content_voca_unit      @relation(fields: [unit_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_voca_question_content_voca_unit_FK")
   member_wordbook      member_wordbook[]      @ignore
 
   @@index([unit_no], map: "content_voca_question_content_voca_unit_FK")
@@ -1067,8 +1527,8 @@ model content_voca_teacher_question {
   register_date        DateTime               @default(now()) @db.Timestamp(0)
   is_deleted           String                 @default("N") @db.Char(1)
   content_answer_sheet content_answer_sheet[]
-  member               member                 @relation(fields: [register], references: [idx], onUpdate: Restrict, map: "content_voca_teacher_member_FK")
-  content_factory      content_factory        @relation(fields: [content_factory_no], references: [idx], onUpdate: Restrict, map: "content_voca_teacher_question_content_factory_FK")
+  member               member                 @relation(fields: [register], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_voca_teacher_member_FK")
+  content_factory      content_factory        @relation(fields: [content_factory_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "content_voca_teacher_question_content_factory_FK")
   member_wordbook      member_wordbook[]      @ignore
 
   @@index([register], map: "content_voca_teacher_member_FK")
@@ -1081,7 +1541,7 @@ model content_voca_unit {
   api_book_id              String                     @db.VarChar(200)
   api_book_title           String?                    @db.VarChar(300)
   api_area                 String?                    @db.VarChar(200)
-  unit_name                String                     @default("") @db.VarChar(50)
+  unit_name                String                     @default("") @db.VarChar(200)
   origin_name              String                     @db.VarChar(50)
   title                    String                     @db.VarChar(200)
   total_voca_count         Int                        @default(0)
@@ -1149,8 +1609,8 @@ model coupon_publish {
   cancel_date      DateTime? @db.Timestamp(0)
   enroll_date      DateTime? @db.Timestamp(0)
   is_deleted       String    @default("N") @db.Char(1)
-  coupon           coupon    @relation(fields: [coupon_no], references: [idx], onUpdate: Restrict, map: "coupon_publish_coupon_FK")
-  member           member    @relation(fields: [member_no], references: [idx], onUpdate: Restrict, map: "coupon_publish_member_FK")
+  coupon           coupon    @relation(fields: [coupon_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "coupon_publish_coupon_FK")
+  member           member    @relation(fields: [member_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "coupon_publish_member_FK")
   order            order[]
 
   @@index([coupon_no], map: "coupon_publish_coupon_FK")
@@ -1170,7 +1630,7 @@ model faq {
   register_date  DateTime     @default(now()) @db.Timestamp(0)
   modify_date    DateTime?    @db.Timestamp(0)
   is_deleted     String       @default("N") @db.Char(1)
-  faq_category   faq_category @relation(fields: [category_no], references: [idx], onUpdate: Restrict, map: "faq_faq_category")
+  faq_category   faq_category @relation(fields: [category_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "faq_faq_category")
 
   @@index([category_no], map: "faq_faq_category")
 }
@@ -1241,7 +1701,7 @@ model inactive_member {
   phone         String?  @db.VarChar(255)
   parent_phone  String?  @db.VarChar(255)
   register_date DateTime @default(now()) @db.Timestamp(0)
-  member        member   @relation(fields: [idx], references: [idx], onUpdate: Restrict, map: "inactive_member_member_FK")
+  member        member   @relation(fields: [idx], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "inactive_member_member_FK")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -1257,7 +1717,7 @@ model inquiry {
   register_date     DateTime  @default(now()) @db.Timestamp(0)
   answer_date       DateTime? @db.Timestamp(0)
   is_deleted        String    @default("N") @db.Char(1)
-  member            member    @relation(fields: [register], references: [idx], onUpdate: Restrict, map: "inquiry_member_FK")
+  member            member    @relation(fields: [register], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "inquiry_member_FK")
 
   @@index([register], map: "inquiry_member_FK")
 }
@@ -1276,8 +1736,8 @@ model invite {
   response_date                          DateTime? @db.Timestamp(0)
   expire_date                            DateTime? @db.Timestamp(0)
   is_deleted                             String    @default("N") @db.Char(1)
-  member_invite_target_member_noTomember member?   @relation("invite_target_member_noTomember", fields: [target_member_no], references: [idx], onDelete: Restrict, onUpdate: Restrict, map: "invite_member_FK")
-  member_invite_registerTomember         member    @relation("invite_registerTomember", fields: [register], references: [idx], onUpdate: Restrict, map: "invite_member_FK2")
+  member_invite_target_member_noTomember member?   @relation("invite_target_member_noTomember", fields: [target_member_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "invite_member_FK")
+  member_invite_registerTomember         member    @relation("invite_registerTomember", fields: [register], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "invite_member_FK2")
   member_member_invite_noToinvite        member[]  @relation("member_invite_noToinvite")
 
   @@index([target_member_no], map: "invite_member_FK")
@@ -1357,7 +1817,7 @@ model member {
   inquiry                                                            inquiry[]
   invite_invite_target_member_noTomember                             invite[]                        @relation("invite_target_member_noTomember")
   invite_invite_registerTomember                                     invite[]                        @relation("invite_registerTomember")
-  invite_member_invite_noToinvite                                    invite?                         @relation("member_invite_noToinvite", fields: [invite_no], references: [idx], onDelete: Restrict, onUpdate: Restrict, map: "member_invite_FK")
+  invite_member_invite_noToinvite                                    invite?                         @relation("member_invite_noToinvite", fields: [invite_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "member_invite_FK")
   member_card                                                        member_card[]
   member_comment                                                     member_comment[]
   member_like_campus                                                 member_like_campus[]            @ignore
@@ -1367,6 +1827,48 @@ model member {
   system_alarm_menual_member                                         system_alarm_menual_member[]
 
   @@index([invite_no], map: "member_invite_FK")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model member_240412_kj {
+  idx                  Int       @default(0)
+  type                 Int       @default(0)
+  profile_no           Int?
+  id                   String    @db.VarChar(30)
+  password             String?   @db.VarChar(255)
+  name                 String    @db.VarChar(20)
+  email                String?   @db.VarChar(100)
+  parent_phone         String?   @db.VarChar(14)
+  phone                String?   @db.VarChar(14)
+  birth                String?   @db.VarChar(10)
+  invite_no            Int?
+  is_event             Int       @default(0)
+  is_email             Int       @default(0)
+  is_sms               Int?      @default(0)
+  noti_message         Int       @default(1)
+  noti_system          Int       @default(1)
+  noti_marketing       Int       @default(1)
+  is_auto_used_coupon  Int       @default(1)
+  is_require_change_pw Int       @default(0)
+  device               String?   @db.Char(5)
+  token                String?   @db.VarChar(255)
+  refresh_token_pc     String?   @db.VarChar(255)
+  last_time_pc         DateTime? @db.Timestamp(0)
+  refresh_token_mobile String?   @db.VarChar(255)
+  last_time_mobile     DateTime? @db.Timestamp(0)
+  last_login           DateTime? @db.Timestamp(0)
+  register_date        DateTime  @default(now()) @db.Timestamp(0)
+  modify_date          DateTime? @db.Timestamp(0)
+  status               String    @default("Y") @db.Char(1)
+  inactive_date        DateTime? @db.Timestamp(0)
+  withdraw_reason      Int?
+  withdraw_input       String?   @db.VarChar(100)
+  withdraw_date        DateTime? @db.Timestamp(0)
+  is_deleted           String    @default("N") @db.Char(1)
+  pw_change_date       DateTime? @db.Timestamp(0)
+
+  @@ignore
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -1382,7 +1884,7 @@ model member_card {
   register_date DateTime  @default(now()) @db.Timestamp(0)
   remove_date   DateTime? @db.Timestamp(0)
   is_deleted    String    @default("N") @db.Char(1)
-  member        member    @relation(fields: [member_no], references: [idx], onUpdate: Restrict, map: "member_card_member_FK")
+  member        member    @relation(fields: [member_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "member_card_member_FK")
 
   @@index([member_no], map: "member_card_member_FK")
 }
@@ -1395,7 +1897,7 @@ model member_comment {
   register_date DateTime  @default(now()) @db.Timestamp(0)
   modify_date   DateTime? @db.Timestamp(0)
   is_deleted    String    @default("N") @db.Char(1)
-  member        member    @relation(fields: [member_no], references: [idx], onUpdate: Restrict, map: "member_comment_member_FK")
+  member        member    @relation(fields: [member_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "member_comment_member_FK")
 
   @@index([member_no], map: "member_comment_member_FK")
 }
@@ -1406,7 +1908,7 @@ model member_like_campus {
   member_no     Int
   campas_no     Int
   register_date DateTime @default(now()) @db.Timestamp(0)
-  member        member   @relation(fields: [member_no], references: [idx], onUpdate: Restrict, map: "member_like_campus_member_FK")
+  member        member   @relation(fields: [member_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "member_like_campus_member_FK")
 
   @@index([member_no], map: "member_like_campus_member_FK")
   @@ignore
@@ -1427,12 +1929,12 @@ model member_pwordbook {
   modify_date            DateTime? @db.Timestamp(0)
   campas_class_course_no Int
 
-  @@id([member_no, pm_id, campas_class_course_no])
+  @@id([member_no, campas_class_course_no, pm_id])
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model member_pwordbook_0612 {
+model member_pwordbook_1 {
   member_no              Int
   learn_cnt              Int
   course_no              Int
@@ -1447,6 +1949,24 @@ model member_pwordbook_0612 {
   campas_class_course_no Int?
 
   @@ignore
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model member_pwordbook_orig {
+  member_no              Int
+  learn_cnt              Int
+  course_no              Int
+  pvoca_no               Int?
+  pm_id                  Int
+  high_level             Int?
+  register_date          DateTime  @default(now()) @db.Timestamp(0)
+  is_deleted             String    @default("N") @db.Char(1)
+  is_memorized           String    @default("N") @db.Char(1)
+  low_level              Int?
+  modify_date            DateTime? @db.Timestamp(0)
+  campas_class_course_no Int?
+
+  @@id([member_no, course_no, pm_id])
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -1484,14 +2004,25 @@ model member_wordbook {
   teacher_voca_no               Int?
   register_date                 DateTime                       @default(now()) @db.Timestamp(0)
   is_deleted                    String                         @default("N") @db.Char(1)
-  content_voca_question         content_voca_question?         @relation(fields: [cedu_voca_no], references: [idx], onDelete: Restrict, onUpdate: Restrict, map: "member_content_voca_question_FK")
-  content_voca_teacher_question content_voca_teacher_question? @relation(fields: [teacher_voca_no], references: [idx], onDelete: Restrict, onUpdate: Restrict, map: "member_content_voca_teacher_question_FK")
-  member                        member                         @relation(fields: [member_no], references: [idx], onUpdate: Restrict, map: "member_wordbook_member_FK")
+  content_voca_question         content_voca_question?         @relation(fields: [cedu_voca_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "member_content_voca_question_FK")
+  content_voca_teacher_question content_voca_teacher_question? @relation(fields: [teacher_voca_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "member_content_voca_teacher_question_FK")
+  member                        member                         @relation(fields: [member_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "member_wordbook_member_FK")
 
   @@index([cedu_voca_no], map: "member_content_voca_question_FK")
   @@index([teacher_voca_no], map: "member_content_voca_teacher_question_FK")
   @@index([member_no], map: "member_wordbook_member_FK")
   @@ignore
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model mp3_qr {
+  idx         Int     @id @default(autoincrement())
+  book_id     BigInt?
+  book_title  String? @db.VarChar(100)
+  question_no Int?
+  mp3_text    String? @db.Text
+  qr          String? @db.VarChar(100)
+  unit        String? @db.VarChar(100)
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -1527,15 +2058,85 @@ model order {
   product_pr_term          Int?
   expire_date              DateTime?         @db.DateTime(0)
   campas_subscrip          campas_subscrip[]
-  coupon_publish           coupon_publish?   @relation(fields: [coupon_publish_no], references: [idx], onDelete: Restrict, onUpdate: Restrict, map: "order_coupon_publish_FK")
-  member                   member            @relation(fields: [order], references: [idx], onUpdate: Restrict, map: "order_member_FK")
-  product                  product           @relation(fields: [product_no], references: [idx], onUpdate: Restrict, map: "order_product_FK")
+  coupon_publish           coupon_publish?   @relation(fields: [coupon_publish_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "order_coupon_publish_FK")
+  member                   member            @relation(fields: [order], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "order_member_FK")
+  product                  product           @relation(fields: [product_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "order_product_FK")
   payment                  payment[]
 
   @@index([coupon_publish_no], map: "order_coupon_publish_FK")
   @@index([order], map: "order_member_FK")
   @@index([product_no], map: "order_product_FK")
   @@index([product_code], map: "order_product_FK2")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model order_0719 {
+  idx                      Int       @default(0)
+  type                     Int       @default(0)
+  product_no               Int
+  product_code             String    @db.VarChar(30)
+  original_price           Int
+  sale_price               Int       @default(0)
+  coupon_publish_no        Int?
+  coupon_sale_type         Int?
+  coupon_sale_value        Int?
+  coupon_price             Int       @default(0)
+  price                    Int
+  pay                      Int       @default(0)
+  balance                  Int
+  preview_refund_price     Int?
+  refund_price             Int?
+  order                    Int
+  register_date            DateTime  @default(now()) @db.Timestamp(0)
+  status                   Int
+  fail_reason              String?   @db.VarChar(300)
+  recurring_fail_campus_no Int?
+  recurring_fail_card_no   Int?
+  refund_fail_reason       String?   @db.VarChar(300)
+  admin_memo               String?   @db.VarChar(100)
+  payment_date             DateTime? @db.Timestamp(0)
+  refund_type              Int?
+  request_refund_date      DateTime? @db.Timestamp(0)
+  response_refund_date     DateTime? @db.Timestamp(0)
+  is_deleted               String    @default("N") @db.Char(1)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model order_0814 {
+  idx                      Int       @default(0)
+  type                     Int       @default(0)
+  product_no               Int
+  product_code             String    @db.VarChar(30)
+  original_price           Int
+  sale_price               Int       @default(0)
+  coupon_publish_no        Int?
+  coupon_sale_type         Int?
+  coupon_sale_value        Int?
+  coupon_price             Int       @default(0)
+  price                    Int
+  pay                      Int       @default(0)
+  balance                  Int
+  preview_refund_price     Int?
+  refund_price             Int?
+  order                    Int
+  register_date            DateTime  @default(now()) @db.Timestamp(0)
+  status                   Int
+  fail_reason              String?   @db.VarChar(300)
+  recurring_fail_campus_no Int?
+  recurring_fail_card_no   Int?
+  refund_fail_reason       String?   @db.VarChar(300)
+  admin_memo               String?   @db.VarChar(100)
+  payment_date             DateTime? @db.Timestamp(0)
+  refund_type              Int?
+  request_refund_date      DateTime? @db.Timestamp(0)
+  response_refund_date     DateTime? @db.Timestamp(0)
+  is_deleted               String    @default("N") @db.Char(1)
+
+  @@ignore
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -1556,10 +2157,58 @@ model payment {
   iamport_status      String    @db.VarChar(20)
   iamport_receipt_url String?   @db.VarChar(255)
   paid_at             String?   @db.VarChar(20)
-  payment_date        DateTime? @db.Timestamp(0)
-  order               order     @relation(fields: [order_no], references: [idx], onDelete: Cascade, onUpdate: Restrict, map: "payment_FK")
+  payment_date        DateTime? @default(now()) @db.Timestamp(0)
+  order               order     @relation(fields: [order_no], references: [idx], onDelete: Cascade, onUpdate: NoAction, map: "payment_FK")
 
   @@index([order_no], map: "payment_FK")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model payment_0719 {
+  idx                 Int       @default(0)
+  order_no            Int
+  type                Int
+  tid                 String?   @db.VarChar(100)
+  cancel_tid          String?   @db.VarChar(100)
+  imp_uid             String?   @db.VarChar(100)
+  merchant_uid        String?   @db.VarChar(80)
+  card_name           String?   @db.VarChar(50)
+  card_no             String?   @db.VarChar(50)
+  card_quota          Int?
+  trans_bank_name     String?   @db.VarChar(50)
+  price               Int
+  payment             Int
+  iamport_status      String    @db.VarChar(20)
+  iamport_receipt_url String?   @db.VarChar(255)
+  paid_at             String?   @db.VarChar(20)
+  payment_date        DateTime? @db.Timestamp(0)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model payment_0814 {
+  idx                 Int       @default(0)
+  order_no            Int
+  type                Int
+  tid                 String?   @db.VarChar(100)
+  cancel_tid          String?   @db.VarChar(100)
+  imp_uid             String?   @db.VarChar(100)
+  merchant_uid        String?   @db.VarChar(80)
+  card_name           String?   @db.VarChar(50)
+  card_no             String?   @db.VarChar(50)
+  card_quota          Int?
+  trans_bank_name     String?   @db.VarChar(50)
+  price               Int
+  payment             Int
+  iamport_status      String    @db.VarChar(20)
+  iamport_receipt_url String?   @db.VarChar(255)
+  paid_at             String?   @db.VarChar(20)
+  payment_date        DateTime? @db.Timestamp(0)
+
+  @@ignore
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -1635,9 +2284,9 @@ model product_course {
   register_date                              DateTime       @default(now()) @db.Timestamp(0)
   delete_date                                DateTime?      @db.Timestamp(0)
   is_deleted                                 String         @default("N") @db.Char(1)
-  content_course                             content_course @relation(fields: [course_no], references: [idx], onUpdate: Restrict, map: "product_course_content_course_FK")
-  product_product_course_product_noToproduct product        @relation("product_course_product_noToproduct", fields: [product_no], references: [idx], onUpdate: Restrict, map: "product_course_product_FK")
-  product_product_course_product_idToproduct product        @relation("product_course_product_idToproduct", fields: [product_id], references: [code], onUpdate: Restrict, map: "product_course_product_FK2")
+  content_course                             content_course @relation(fields: [course_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "product_course_content_course_FK")
+  product_product_course_product_noToproduct product        @relation("product_course_product_noToproduct", fields: [product_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "product_course_product_FK")
+  product_product_course_product_idToproduct product        @relation("product_course_product_idToproduct", fields: [product_id], references: [code], onDelete: NoAction, onUpdate: NoAction, map: "product_course_product_FK2")
 
   @@index([course_no], map: "product_course_content_course_FK")
   @@index([product_no], map: "product_course_product_FK")
@@ -1738,9 +2387,9 @@ model report {
   modify_date        DateTime?       @db.Timestamp(0)
   is_deleted         String          @default("N") @db.Char(1)
   question_data      String?         @db.VarChar(300)
-  content_course     content_course? @relation(fields: [course_no], references: [idx], onDelete: Restrict, onUpdate: Restrict, map: "report_content_course_FK")
-  content_factory    content_factory @relation(fields: [content_factory_no], references: [idx], onUpdate: Restrict, map: "report_content_factory_FK")
-  member             member          @relation(fields: [register], references: [idx], onUpdate: Restrict, map: "report_member_FK")
+  content_course     content_course? @relation(fields: [course_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "report_content_course_FK")
+  content_factory    content_factory @relation(fields: [content_factory_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "report_content_factory_FK")
+  member             member          @relation(fields: [register], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "report_member_FK")
 
   @@index([course_no], map: "report_content_course_FK")
   @@index([content_factory_no], map: "report_content_factory_FK")
@@ -1760,7 +2409,7 @@ model system_alarm {
   register_date         DateTime              @default(now()) @db.Timestamp(0)
   modify_date           DateTime?             @db.Timestamp(0)
   is_deleted            String                @default("N") @db.Char(1)
-  system_alarm_category system_alarm_category @relation(fields: [category_no], references: [idx], onUpdate: Restrict, map: "system_alarm_system_alarm_category_FK")
+  system_alarm_category system_alarm_category @relation(fields: [category_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "system_alarm_system_alarm_category_FK")
 
   @@index([category_no], map: "system_alarm_system_alarm_category_FK")
 }
@@ -1771,7 +2420,7 @@ model system_alarm_category {
   parent_no                   Int?
   name                        String                  @db.VarChar(50)
   system_alarm                system_alarm[]
-  system_alarm_category       system_alarm_category?  @relation("system_alarm_categoryTosystem_alarm_category", fields: [parent_no], references: [idx], onDelete: Restrict, onUpdate: Restrict, map: "system_alarm_category_self_FK")
+  system_alarm_category       system_alarm_category?  @relation("system_alarm_categoryTosystem_alarm_category", fields: [parent_no], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "system_alarm_category_self_FK")
   other_system_alarm_category system_alarm_category[] @relation("system_alarm_categoryTosystem_alarm_category")
 
   @@index([parent_no], map: "system_alarm_category_self_FK")
@@ -1797,8 +2446,8 @@ model system_alarm_menual_member {
   menual_no           Int
   member_no           Int
   is_deleted          String              @default("N") @db.Char(1)
-  member              member              @relation(fields: [member_no], references: [idx], onUpdate: Restrict, map: "FK_system_alarm_menual_member_member")
-  system_alarm_menual system_alarm_menual @relation(fields: [menual_no], references: [idx], onDelete: Cascade, onUpdate: Restrict, map: "FK_system_alarm_menual_member_system_alarm_menual")
+  member              member              @relation(fields: [member_no], references: [idx], onUpdate: NoAction, map: "FK_system_alarm_menual_member_member")
+  system_alarm_menual system_alarm_menual @relation(fields: [menual_no], references: [idx], onDelete: Cascade, onUpdate: NoAction, map: "FK_system_alarm_menual_member_system_alarm_menual")
 
   @@index([member_no], map: "FK_system_alarm_menual_member_member")
   @@index([menual_no], map: "FK_system_alarm_menual_member_system_alarm_menual")
@@ -1819,6 +2468,7 @@ model temp_pwordbook {
   member_no              Int?
   course_no              Int?
   campas_class_course_no Int?
+  pm_id                  Int?
 
   @@ignore
 }
