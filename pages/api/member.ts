@@ -43,7 +43,7 @@ export default async function createMember(req: NextApiRequest, res: NextApiResp
 
         const password = crypto
             .createHmac("sha256", "cedu2022")
-            .update(excel_list[0]['비밀번호'])
+            .update(excel_list[0]['비밀번호'] + "")
             .digest("hex");
 
         let _excel_list = excel_list.map((item) => ({
